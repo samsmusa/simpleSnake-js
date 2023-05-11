@@ -1,5 +1,7 @@
 const root = document.getElementById("root");
 
+let BASIC_MOVES = { up: 1, down: 2, left: 3, right: 4 };
+
 class SnakeGame {
   constructor(pos) {
     this.clear();
@@ -112,7 +114,9 @@ class SnakeGame {
     }
   }
   clear() {
-    this.mat = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+    this.mat = Array(11)
+      .fill()
+      .map((_, i) => i + 1);
     this.pos = { x: 1, y: 1 };
     this.Occ = this.makeArr(this.mat);
     this.drawGrid();
@@ -120,6 +124,24 @@ class SnakeGame {
     this.move();
     this.drawMeal();
     this.point = 0;
+  }
+  getMoves() {
+    const { x: cx, y: cy } = game.pos;
+    const [mx, my] = game.mealPos.split("-");
+    const x1x2 = parseInt(mx) - cx;
+    const y1y2 = parseInt(my) - cy;
+    let arr = [];
+    if (x1x2 > 0) {
+      arr = arr.concat(Array(Math.abs(x1x2)).fill(BASIC_MOVES.down));
+    } else {
+      arr = arr.concat(Array(Math.abs(x1x2)).fill(BASIC_MOVES.up));
+    }
+    if (y1y2 > 0) {
+      arr = arr.concat(Array(Math.abs(y1y2)).fill(BASIC_MOVES.right));
+    } else {
+      arr = arr.concat(Array(Math.abs(y1y2)).fill(BASIC_MOVES.left));
+    }
+    return arr;
   }
 }
 
@@ -145,26 +167,23 @@ const playHuman = () => {
   });
 };
 
-const playAuto = () => {
-  let moves = [
-    1, 1, 2, 3, 2, 1, 1, 2, 3, 2, 1, 1, 2, 3, 2, 1, 1, 2, 3, 2, 2, 2, 2, 2, 4,
-    2, 3, 4, 4,
-  ];
+const playAuto = async () => {
+  let moves = game.getMoves();
+  console.log(moves);
   automate(moves);
 };
 
 const action = (move) => {
-  let basicMoves = { up: 1, down: 2, left: 3, right: 4 };
-  if (move === basicMoves.left) {
+  if (move === BASIC_MOVES.left) {
     game.left();
     console.log("Left key");
-  } else if (move === basicMoves.up) {
+  } else if (move === BASIC_MOVES.up) {
     game.up();
     console.log("Up key");
-  } else if (move === basicMoves.right) {
+  } else if (move === BASIC_MOVES.right) {
     game.right();
     console.log("Right key");
-  } else if (move === basicMoves.down) {
+  } else if (move === BASIC_MOVES.down) {
     game.down();
     console.log("Down key");
   }
@@ -181,8 +200,27 @@ const automate = (arr, delay = 200) => {
   });
 
   Promise.all(promises).then(() => {
-    console.log("All elements logged.");
+    playAuto();
   });
+};
+
+const getMoves = () => {
+  const [cx, cy] = game.pos;
+  const [mx, my] = game.mealPos;
+  const x1x2 = cx - mx;
+  const y1y2 = cy - my;
+  let arr = [];
+  if (x1x2 > 0) {
+    arr = arr.concat(Array(Math.abs(x1x2)).fill(BASIC_MOVES.right));
+  } else {
+    arr = arr.concat(Array(Math.abs(x1x2)).fill(BASIC_MOVES.left));
+  }
+  if (y1y2 > 0) {
+    arr = arr.concat(Array(Math.abs(y1y2)).fill(BASIC_MOVES.up));
+  } else {
+    arr = arr.concat(Array(Math.abs(y1y2)).fill(BASIC_MOVES.down));
+  }
+  return arr;
 };
 
 playAuto();
