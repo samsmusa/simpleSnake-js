@@ -114,6 +114,7 @@ class SnakeGame {
     }
   }
   clear() {
+    this.removeAllChildNodes(root);
     this.mat = Array(11)
       .fill()
       .map((_, i) => i + 1);
@@ -126,8 +127,8 @@ class SnakeGame {
     this.point = 0;
   }
   getMoves() {
-    const { x: cx, y: cy } = game.pos;
-    const [mx, my] = game.mealPos.split("-");
+    const { x: cx, y: cy } = this.pos;
+    const [mx, my] = this.mealPos.split("-");
     const x1x2 = parseInt(mx) - cx;
     const y1y2 = parseInt(my) - cy;
     let arr = [];
@@ -143,6 +144,11 @@ class SnakeGame {
     }
     return arr;
   }
+  removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+  }
 }
 
 const game = new SnakeGame("aaa");
@@ -150,6 +156,9 @@ const game = new SnakeGame("aaa");
 //extra
 
 const playHuman = () => {
+  console.log("human play");
+  game.clear();
+  removeEventListener(type, "keydown");
   document.addEventListener("keydown", function (event) {
     if (event.key == "ArrowLeft") {
       game.left();
@@ -168,8 +177,12 @@ const playHuman = () => {
 };
 
 const playAuto = async () => {
-  let moves = game.getMoves();
-  console.log(moves);
+  game.clear();
+  autoMove();
+};
+
+const autoMove = () => {
+  let moves = shuffleArray(game.getMoves());
   automate(moves);
 };
 
@@ -189,7 +202,7 @@ const action = (move) => {
   }
 };
 
-const automate = (arr, delay = 200) => {
+const automate = (arr, delay = 10) => {
   const promises = arr.map((elem, i) => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -200,27 +213,20 @@ const automate = (arr, delay = 200) => {
   });
 
   Promise.all(promises).then(() => {
-    playAuto();
+    if (game.mealPos) {
+      autoMove();
+    }
+    console.log("all done");
   });
 };
 
-const getMoves = () => {
-  const [cx, cy] = game.pos;
-  const [mx, my] = game.mealPos;
-  const x1x2 = cx - mx;
-  const y1y2 = cy - my;
-  let arr = [];
-  if (x1x2 > 0) {
-    arr = arr.concat(Array(Math.abs(x1x2)).fill(BASIC_MOVES.right));
-  } else {
-    arr = arr.concat(Array(Math.abs(x1x2)).fill(BASIC_MOVES.left));
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-  if (y1y2 > 0) {
-    arr = arr.concat(Array(Math.abs(y1y2)).fill(BASIC_MOVES.up));
-  } else {
-    arr = arr.concat(Array(Math.abs(y1y2)).fill(BASIC_MOVES.down));
-  }
-  return arr;
-};
+  return array;
+}
 
-playAuto();
+// playAuto();
+// playHuman();
