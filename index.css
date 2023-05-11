@@ -1,0 +1,48 @@
+.piece-square {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  /* position: relative; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: left;
+}
+
+.dark-square {
+  background: rgb(70, 69, 69);
+}
+
+.board {
+  margin: 30px;
+  width: 770px;
+  height: 770px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  background-color: white;
+  display: grid;
+  grid-template-columns: repeat(11, [col-start] 1fr);
+  /* grid-auto-rows: 200px; */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.black {
+  background: rgb(92, 91, 91);
+}
+
+.current {
+  /* border-radius: 50%; */
+  background: #ff0000;
+}
+
+.occupied {
+  background: #9b6464;
+}
+
+.meal {
+  border-radius: 50%;
+  background: #3cfa02;
+}
