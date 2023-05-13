@@ -38,7 +38,7 @@ class SnakeGame {
     }
 
     el.setAttribute("id", `${x}-${y}`);
-    el.textContent = `${x}${y}`;
+    // el.textContent = `${x}${y}`;
     return el;
   }
   makeOccupied() {
@@ -158,7 +158,7 @@ const game = new SnakeGame("aaa");
 const playHuman = () => {
   console.log("human play");
   game.clear();
-  removeEventListener(type, "keydown");
+  // removeEventListener(type, "keydown");
   document.addEventListener("keydown", function (event) {
     if (event.key == "ArrowLeft") {
       game.left();
@@ -202,7 +202,7 @@ const action = (move) => {
   }
 };
 
-const automate = (arr, delay = 10) => {
+const automate = (arr, delay = 300) => {
   const promises = arr.map((elem, i) => {
     return new Promise((resolve) => {
       setTimeout(() => {
